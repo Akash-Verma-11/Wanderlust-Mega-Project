@@ -93,25 +93,58 @@ pipeline {
             }
         }
         
-        stage("Docker: Build Images"){
-            steps{
-                script{
-                        dir('backend'){
-                            docker_build("wanderlust-backend-beta","${params.BACKEND_DOCKER_TAG}","akash11v")
+        stage('Docker: Build Images') {
+            parallel {
+                stage('Build Backend') {
+                    steps {
+                        dir('backend') {
+                            script {
+                                docker_build(
+                                    imageName: 'akash11v/wanderlust-backend-beta',
+                                    imageTag: params.BACKEND_DOCKER_TAG
+                                )
+                            }
                         }
-                    
-                        dir('frontend'){
-                            docker_build("wanderlust-frontend-beta","${params.FRONTEND_DOCKER_TAG}","akash11v")
+                    }
+                }
+                stage('Build Frontend') {
+                    steps {
+                        dir('frontend') {
+                            script {
+                                docker_build(
+                                    imageName: 'akash11v/wanderlust-frontend-beta',
+                                    imageTag: params.FRONTEND_DOCKER_TAG
+                                )
+                            }
                         }
+                    }
                 }
             }
         }
         
-        stage("Docker: Push to DockerHub"){
-            steps{
-                script{
-                    docker_push("wanderlust-backend-beta","${params.BACKEND_DOCKER_TAG}","akash11v") 
-                    docker_push("wanderlust-frontend-beta","${params.FRONTEND_DOCKER_TAG}","akaash11v")
+        stage('Docker: Push to DockerHub') {
+            parallel {
+                stage('Push Backend') {
+                    steps {
+                        script {
+                            docker_push(
+                                imageName: 'akash11v/wanderlust-backend-beta',
+                                imageTag: params.BACKEND_DOCKER_TAG,
+                                docker: 'docker-hub-credentials'
+                            )
+                        }
+                    }
+                }
+                stage('Push Frontend') {
+                    steps {
+                        script {
+                            docker_push(
+                                imageName: 'akash11v/wanderlust-frontend-beta',
+                                imageTag: params.FRONTEND_DOCKER_TAG,
+                                docker: 'docker-hub-credentials'
+                            )
+                        }
+                    }
                 }
             }
         }
