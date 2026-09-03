@@ -33,7 +33,6 @@ pipeline {
             }
         }
         
-        
         stage("Update: Kubernetes manifests"){
             steps{
                 script{
@@ -48,7 +47,6 @@ pipeline {
                             sed -i -e s/wanderlust-frontend-beta.*/wanderlust-frontend-beta:${params.FRONTEND_DOCKER_TAG}/g frontend.yaml
                         """
                     }
-                    
                 }
             }
         }
@@ -83,9 +81,9 @@ pipeline {
                 }
             }
         }
-        }
-    }
-  post {
+    } 
+
+    post { 
         success {
             script {
                 emailext attachLog: true,
@@ -105,12 +103,12 @@ pipeline {
                         </div>
                     </body>
                     </html>
-            """,
-            to: 'akash.verma698@gmail.com',
-            mimeType: 'text/html'
+                """,
+                to: 'akash.verma698@gmail.com',
+                mimeType: 'text/html'
             }
         }
-      failure {
+        failure {
             script {
                 emailext attachLog: true,
                 from: 'akash.verma698@gmail.com',
@@ -126,10 +124,10 @@ pipeline {
                         </div>
                     </body>
                     </html>
-            """,
-            to: 'akash.verma698@gmail.com',
-            mimeType: 'text/html'
+                """,
+                to: 'akash.verma698@gmail.com',
+                mimeType: 'text/html'
             }
         }
     }
-}
+} // <-- CLOSES 'pipeline'
