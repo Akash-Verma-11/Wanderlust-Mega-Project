@@ -19,8 +19,9 @@ spec:
       containers:
         - name: backend
           image: akash11v/wanderlust-backend-beta:v2.1
-          ports:
-            - containerPort: 8080
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
 ---
 apiVersion: v1
 kind: Service
