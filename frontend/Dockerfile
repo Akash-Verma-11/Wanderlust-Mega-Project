@@ -19,11 +19,14 @@ FROM node:21-slim
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy built assets and dependencies from frontend-builder stage
-COPY --from=frontend-builder /app .
+# Copy built assets and change ownership to the non-root 'node' user
+COPY --chown=node:node --from=frontend-builder /app .
 
-# Copy the .env.sample file to .env.local
-COPY .env.docker .env.local
+# Copy the .env.sample file to .env.local with correct ownership
+COPY --chown=node:node .env.docker .env.local
+
+# Explicitly switch to the non-root user to satisfy Trivy DS-0002
+USER node
 
 # Expose port 5173 for the Node.js application
 EXPOSE 5173
