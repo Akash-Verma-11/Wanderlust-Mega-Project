@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: akash11v/wanderlust-backend-beta:v20
+          image: akash11v/wanderlust-backend-beta:v21
           securityContext:
             runAsNonRoot: true
             readOnlyRootFilesystem: true
