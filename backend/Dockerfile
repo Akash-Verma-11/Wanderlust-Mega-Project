@@ -19,10 +19,12 @@ FROM node:21-slim
 # setup the working dir
 WORKDIR /app
 
-# copy the above stage as compressed
-COPY --from=backend-builder /app .
+# Copy the above stage and change ownership to the non-root 'node' user
+COPY --chown=node:node --from=backend-builder /app .
+COPY --chown=node:node .env.docker .env
 
-COPY .env.docker .env
+# Explicitly switch to the non-root user to satisfy Trivy DS-0002
+USER node
 
 # Port
 EXPOSE 8080
